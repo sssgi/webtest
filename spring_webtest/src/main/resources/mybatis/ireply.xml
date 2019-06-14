@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+ 
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="spring.model.ireply.IreplyInter">
+	
+	<insert id="create" parameterType="IreplyDTO">
+		<selectKey keyProperty="rnum" resultType="int" order="BEFORE">
+		SELECT nvl(max(rnum),0)+1
+		FROM ireply	
+		</selectKey>
+		INSERT INTO ireply (rnum, content, regdate, id, imgno)
+		VALUES(#{rnum},#{content},sysdate,#{id},#{imgno})	
+	</insert>
+	
+	<select id="read" parameterType="int" resultType="IreplyDTO">
+		SELECT * 
+		FROM ireply
+		WHERE rnum = #{rnum}
+	</select>
+	
+	<update id="update" parameterType="IreplyDTO">
+		UPDATE ireply
+		SET content = #{content}
+		WHERE rnum = #{rnum}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		DELETE 
+		FROM ireply
+		WHERE rnum = #{rnum}
+	</delete>
+	
+	<select id="list" parameterType="Map" resultType="IreplyDTO">
+		SELECT rnum, content, to_char(regdate,'yyyy-mm-dd') regdate, id, imgno, r
+		FROM(
+        	SELECT rnum, content, regdate, id, imgno, rownum r
+        	FROM(
+                SELECT rnum, content, regdate, id, imgno
+                FROM ireply
+               	WHERE imgno = #{imgno}
+                order by rnum DESC
+        	)
+		)
+		<![CDATA[WHERE r >= 1 and r <= 5]]>
+	</select>
+	
+	<select id="total" parameterType="int" resultType="int">
+		SELECT count(*)
+		FROM ireply
+		WHERE imgno = #{imgno}
+	</select>
+	
+ 	<select id="rcount" parameterType="int" resultType="int">
+    	SELECT count(*) 
+    	FROM ireply
+    	WHERE imgno = #{imgno}
+    </select>		
+
+
+	
+
+
+
+</mapper>

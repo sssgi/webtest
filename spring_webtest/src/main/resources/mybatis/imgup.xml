@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- DAO를 사용하지 않고 인터페이스를 통해 구현 -->
+<mapper namespace="spring.model.imgup.ImgUpInter">
+	<!-- list -->
+	<select id="list" parameterType="Map" resultType="ImgUpDTO">
+		select imgno,name, title, content, regdate, passwd, viewcnt, fname, r
+			from( select imgno,name, title, content, regdate, passwd, viewcnt,fname, rownum r
+				  from(
+						select imgno,name, title, content, regdate,passwd, viewcnt, fname
+						from image
+		<where>
+			<choose>
+				<when test="col=='name'">
+					name like '%'||#{word}||'%'
+				</when>
+				<when test="col=='title'">
+					title like '%'||#{word}||'%'
+				</when>
+				<when test="col=='content'">
+					content like '%'||#{word}||'%'
+				</when>
+				<when test="col=='title_content'">
+					title_content like '%'||#{word}||'%'
+				</when>
+			</choose>
+		</where>
+		order by imgno desc)
+		)
+		<![CDATA[
+		where r >= #{sno} and r <= #{eno}
+		]]>
+
+	</select>
+
+	<!-- total -->
+	<select id="total" parameterType="Map" resultType="int">
+		select count(*) as cnt
+		from image
+		<where>
+			<choose>
+				<when test="col=='name'">
+					name like '%'||#{word}||'%'
+				</when>
+				<when test="col=='title'">
+					title like '%'||#{word}||'%'
+				</when>
+				<when test="col=='content'">
+					content like '%'||#{word}||'%'
+				</when>
+				<when test="col=='title_content'">
+					title_content like '%'||#{word}||'%'
+				</when>
+			</choose>
+		</where>
+	</select>
+
+	<!-- create -->
+	<insert id="create" parameterType="ImgUpDTO">
+		insert into image (imgno,name,
+		title, content, regdate, passwd, viewcnt, fname)
+		values((select
+		nvl(max(imgno),0)+1 from image), #{name},#{title}, #{content},
+		sysdate, #{passwd}, #{viewcnt}, #{fname})
+	</insert>
+
+	<!-- read -->
+	<select id="read" parameterType="int" resultType="ImgUpDTO">
+		select imgno,
+		name, title, content, fname, viewcnt
+		from image
+		where imgno = #{imgno}
+	</select>
+
+	<!-- imgRead???? -->
+	<select id="imgRead" parameterType="int" resultType="Map">
+		SELECT *
+		FROM ( 
+			select 
+			lag(imgno,2,0) over (order by imgno) pre_imgno2,<!-- 데이터가 없을경우 0으로 대체 -->
+			lag(imgno,1,0) over (order by imgno ) pre_imgno1,
+			imgno, 
+			lead(imgno,1,0) over (order by imgno) nex_imgno1,
+			lead(imgno,2,0) over (order by imgno) nex_imgno2,
+
+			lag(fname,2,0) over (order by imgno) pre_file2,
+			lag(fname,1,0) over (order by imgno ) pre_file1, 
+			fname, 
+			lead(fname,1,0) over (order by imgno) nex_file1,
+			lead(fname,2,0) over (order by imgno) nex_file2
+			
+			from ( 
+				SELECT imgno, fname 
+				FROM image 
+				ORDER BY imgno DESC 
+				) 
+		) 
+		WHERE imgno = #{imgno} 
+	</select>
+
+	<!-- update 여러개를 파라메터로 받을 때는 dto가 파라메터 타입이 됨 -->
+	<update id="update" parameterType="ImgUpDTO">
+		update image
+		set title =
+		#{title},
+		content = #{content},
+		fname = #{fname}
+		where imgno = #{imgno}
+	</update>
+
+	<!-- upViewcnt -->
+	<update id="upViewcnt" parameterType="int">
+		update image
+		set viewcnt =
+		viewcnt + 1
+		where imgno = #{imgno}
+	</update>
+
+	<!-- delete -->
+	<delete id="delete" parameterType="int">
+		delete
+		from image
+		where imgno =
+		#{imgno}
+	</delete>
+
+	<!-- passwdCheck -->
+	<select id="passCheck" parameterType="Map" resultType="int">
+		select count(*) as cnt
+		from image
+		 where imgno = #{imgno} AND passwd = #{passwd}
+	</select>
+</mapper>

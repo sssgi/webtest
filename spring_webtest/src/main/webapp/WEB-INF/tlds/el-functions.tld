@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" 
+    	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+                        web-jsptaglibrary_2_0.xsd" 
+    	version="2.0"> 
+    
+	<description>EL에서 함수실행</description> 
+	<tlib-version>1.0</tlib-version> 
+	<short-name>ELfunctions</short-name> 
+	<uri>/ELFunctions</uri>     
+
+  	<function>  <!-- EL에서 사용할 함수의 정의// 하나의 함수당 하나의 <function>객체에 매핑됩니다. --> 
+        <description>Date 객체를 포맷팅하여 출력</description> 
+        <name>dateFormat</name>  <!--EL에서 사용할 함수의 이름 --> 
+         <!-- <function-class>함수의 기능을 제공할 클래스의  이름 -->
+        <function-class>el.DateUtil</function-class> 
+        <!-- <function-signature>함수 기능을 실행할 메소드를 명시 --> 
+        <function-signature>java.lang.String format( java.util.Date )</function-signature> 
+    </function> 
+    
+    <!-- 새로운 함수는 function태그로 추가. --> 
+    <function>
+    	<description>new Img생성</description>
+    	<name>newImg</name>
+    	<function-class>spring.utility.webtest.Utility</function-class>
+    	<function-signature>boolean compareDay(java.lang.String)</function-signature>
+    </function>
+    
+    <function>
+    	<description>직업명생성</description>
+    	<name>jobName</name>
+    	<function-class>spring.utility.webtest.Utility</function-class>
+    	<function-signature>java.lang.String getCodeValue(java.lang.String)</function-signature>
+    </function>
+       
+    <function>  
+        <description>댓글수 보여주기</description> 
+        <name>rcount</name>
+        <function-class>
+            spring.utility.webtest.Utility
+        </function-class> 
+        <function-signature>
+            int rcount(int,spring.model.reply.ReplyInter) 
+        </function-signature> 
+    </function> 
+       
+    <function>  
+        <description>댓글수 보여주기</description> 
+        <name>rcount2</name>
+        <function-class>
+            spring.utility.webtest.Utility
+        </function-class> 
+        <function-signature>
+            int rcount2(int,spring.model.ireply.IreplyInter) 
+        </function-signature> 
+    </function>    
+    
+         
+</taglib>    

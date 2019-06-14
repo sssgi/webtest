@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE  tiles-definitions PUBLIC 
+    "-//Aapche Software Foundation//DTD Tiles Configuration 2.0//EN" 
+    "http://tiles.apache.org/dtds/tiles-config_2_0.dtd"> 
+
+<tiles-definitions> <!-- definition : 리턴될 뷰의 이름  -->
+ 
+	<definition name="/imgup/list" extends="main"> 
+        <put-attribute name="title" value="이미지목록" ></put-attribute> 
+        <put-attribute name="body" value="/WEB-INF/views/imgup/list.jsp" />      
+    </definition>     
+    
+    <definition name="/imgup/create" extends="main"> 
+        <put-attribute name="title" value="이미지등록" ></put-attribute> 
+        <put-attribute name="body" value="/WEB-INF/views/imgup/createForm.jsp" /> 
+    </definition>   
+    
+    <definition name="/imgup/read" extends="main"> 
+        <put-attribute name="title" value="이미지보기" ></put-attribute> 
+        <put-attribute name="body" value="/WEB-INF/views/imgup/read.jsp" /> 
+    </definition>  
+    
+    <definition name="/imgup/update" extends="main"> 
+        <put-attribute name="title" value="이미지수정" ></put-attribute> 
+        <put-attribute name="body" value="/WEB-INF/views/imgup/updateForm.jsp" /> 
+    </definition>  
+
+    <definition name="/imgup/delete" extends="main"> 
+        <put-attribute name="title" value="이미지삭제" ></put-attribute> 
+        <put-attribute name="body" value="/WEB-INF/views/imgup/deleteForm.jsp" /> 
+    </definition>
+    
+</tiles-definitions> 

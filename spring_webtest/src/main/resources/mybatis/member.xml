@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- id를 메소드명. resultType을 return타입으로 , parameterType= 매개변수로-->
+
+<mapper namespace="spring.model.member.MemberInter">
+
+	<insert id="create" parameterType="MemberDTO">
+		INSERT INTO member(id, passwd, mname, tel, email, zipcode, 
+						   address1, address2, job, mdate, fname, grade)
+		VALUES(#{id},#{passwd},#{mname},#{tel},#{email},#{zipcode},
+			   #{address1},#{address2},#{job},sysdate,#{fname},'H')
+	</insert>
+	
+	<delete id="delete" parameterType="String">
+		DELETE
+		FROM member
+		WHERE id = #{id}	
+	</delete>
+	
+	<select id="duplicateEmail" parameterType="String" resultType="int">
+		SELECT count(email)
+		FROM member
+		WHERE email = #{email}
+	</select>
+	
+	<select id="duplicateId" parameterType="String" resultType="int">
+		SELECT count(id)
+		FROM member
+		WHERE id = #{id}
+	</select>
+	
+	
+	<select id="getGrade" parameterType="String" resultType="String">
+		SELECT grade 
+		FROM member 
+		WHERE id = #{id}	
+	</select>
+	
+	<select id="list" parameterType="Map" resultType="MemberDTO">
+		SELECT id, mname, tel, email, zipcode, address1, address2, fname, r         
+		FROM(                                                                      
+    		SELECT id, mname, tel, email, zipcode, address1, address2, fname, rownum r 
+    		FROM(                                                                   
+         		SELECT id, mname, tel, email, zipcode, address1, address2, fname   
+				FROM member
+				<where>
+				<choose>
+					<when test="col=='name'">
+						mname like '%'||#{word}||'%'
+					</when>
+					<when test="col=='id'">
+						id like '%'||#{word}||'%'
+					</when>
+					<when test="col=='email'">
+						email like '%'||#{word}||'%'
+					</when>
+				</choose>
+				</where>
+				ORDER BY mdate DESC
+			)	                                                        
+		)
+		<![CDATA[where r>=#{sno} and r<=#{eno}]]>
+	</select>
+	
+	<select id="loginCheck" parameterType="Map" resultType="int">
+		SELECT count(*)
+		FROM member
+		WHERE id = #{id} and passwd = #{passwd}             
+	</select>
+	
+	<select id="read" parameterType="String" resultType="MemberDTO"> 
+		SELECT id, mname, tel, email, zipcode, address1, address2, job, mdate, fname
+		FROM member  
+		WHERE id = #{id}	
+	</select>
+	
+	<select id="total" parameterType="Map" resultType="int">
+		SELECT count(*)
+		FROM member
+		<where>
+		<choose>
+			<when test="col=='name'">
+				mname like '%'||#{word}||'%'
+			</when>
+			<when test="col=='id'">
+				id like '%'||#{word}||'%'
+			</when>
+			<when test="col=='email'">
+				email like '%'||#{word}||'%'
+			</when>
+		</choose>
+		</where>
+	</select>
+	
+	<update id="update" parameterType="MemberDTO">              
+		UPDATE member 
+		SET   tel=#{tel},  
+			  email=#{email},
+			  zipcode=#{zipcode},
+			  address1=#{address1}, 
+			  address2=#{address2}, 
+			  job=#{job}   
+		where id=#{id}  
+	</update> 
+	
+	<update id="updateFile" parameterType="Map">
+		UPDATE member
+		SET fname = #{fname}
+		WHERE id = #{id} 
+	
+	</update>
+	
+	<update id="updatePw" parameterType="Map">
+		UPDATE member
+		SET passwd = #{passwd}
+		WHERE id = #{id} 
+	</update>
+	
+
+	<select id="idFind" parameterType="Map" resultType="String">
+		SELECT id 
+		FROM member  
+		WHERE mname = #{mname} and email = #{email}                               
+	</select>
+	
+	<select id="passwdFind" parameterType="Map" resultType="String">	
+		SELECT passwd 
+		FROM member 
+		WHERE mname = #{mname} and id = #{id}	
+	</select>
+
+
+</mapper>
